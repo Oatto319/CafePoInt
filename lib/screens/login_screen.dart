@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'register_screen.dart';
-import 'home_screen.dart';
+import 'main_nav_screen.dart';
 import '../widgets/custom_button.dart';
 import '../widgets/custom_text_field.dart';
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -16,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
+  bool _isLoading = false;
 
   @override
   void dispose() {
@@ -24,15 +26,37 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _login() {
+  Future<void> _login() async {
     if (_formKey.currentState!.validate()) {
-      // เข้าสู่ระบบสำเร็จ - ไปหน้า Home
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomeScreen(),
-        ),
+      setState(() => _isLoading = true);
+      
+      bool success = await AuthService.login(
+        _emailController.text,
+        _passwordController.text,
       );
+      
+      setState(() => _isLoading = false);
+      
+      if (success && mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('เข้าสู่ระบบสำเร็จ!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 1),
+          ),
+        );
+        
+        await Future.delayed(const Duration(seconds: 1));
+        
+        if (mounted) {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MainNavScreen(),
+            ),
+          );
+        }
+      }
     }
   }
 
@@ -45,8 +69,8 @@ class _LoginScreenState extends State<LoginScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.blue.shade400,
-              Colors.blue.shade800,
+              Colors.brown.shade700,
+              Colors.brown.shade400,
             ],
           ),
         ),
@@ -59,62 +83,62 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Logo หรือไอคอน
+                    // Logo
                     Container(
-                      width: 100,
-                      height: 100,
+                      width: 120,
+                      height: 120,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 10,
-                            offset: const Offset(0, 5),
+                            color: Colors.black.withOpacity(0.3),
+                            blurRadius: 20,
+                            offset: const Offset(0, 10),
                           ),
                         ],
                       ),
-                      child: const Icon(
-                        Icons.lock_outline,
-                        size: 50,
-                        color: Colors.blue,
+                      child: Icon(
+                        Icons.coffee,
+                        size: 60,
+                        color: Colors.brown.shade700,
                       ),
                     ),
                     const SizedBox(height: 30),
 
-                    // หัวข้อ
+                    // Title
                     const Text(
-                      'เข้าสู่ระบบ',
+                      'Coffee Rewards',
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 36,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
+                        letterSpacing: 1.5,
                       ),
                     ),
                     const SizedBox(height: 10),
-                    const Text(
-                      'ยินดีต้อนรับกลับมา',
+                    Text(
+                      'สะสมแต้ม รับกาแฟฟรี',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Colors.white70,
+                        color: Colors.white.withOpacity(0.9),
                       ),
                     ),
                     const SizedBox(height: 40),
 
-                    // Card สำหรับฟอร์ม
+                    // Login Card
                     Card(
-                      elevation: 8,
+                      elevation: 10,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(20.0),
+                        padding: const EdgeInsets.all(24.0),
                         child: Column(
                           children: [
-                            // Email Field
                             CustomTextField(
                               controller: _emailController,
-                              labelText: 'อีเมล',
+                              labelText: 'อีเมลสมาชิก',
                               hintText: 'กรอกอีเมลของคุณ',
                               prefixIcon: Icons.email_outlined,
                               keyboardType: TextInputType.emailAddress,
@@ -130,7 +154,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             const SizedBox(height: 20),
 
-                            // Password Field
                             CustomTextField(
                               controller: _passwordController,
                               labelText: 'รหัสผ่าน',
@@ -159,41 +182,26 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return null;
                               },
                             ),
-                            const SizedBox(height: 10),
+                            const SizedBox(height: 30),
 
-                            // ลืมรหัสผ่าน
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('ฟีเจอร์นี้ยังไม่พร้อมใช้งาน'),
-                                    ),
-                                  );
-                                },
-                                child: const Text('ลืมรหัสผ่าน?'),
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-
-                            // ปุ่ม Login
-                            CustomButton(
-                              text: 'เข้าสู่ระบบ',
-                              onPressed: _login,
-                            ),
+                            _isLoading
+                                ? const CircularProgressIndicator()
+                                : CustomButton(
+                                    text: 'เข้าสู่ระบบ',
+                                    onPressed: _login,
+                                  ),
                           ],
                         ),
                       ),
                     ),
                     const SizedBox(height: 20),
 
-                    // ลิงก์ไปหน้า Register
+                    // Register Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const Text(
-                          'ยังไม่มีบัญชี?',
+                          'ยังไม่เป็นสมาชิก?',
                           style: TextStyle(color: Colors.white),
                         ),
                         TextButton(
@@ -206,11 +214,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                           },
                           child: const Text(
-                            'สมัครสมาชิก',
+                            'สมัครเลย',
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 16,
+                              decoration: TextDecoration.underline,
                             ),
                           ),
                         ),

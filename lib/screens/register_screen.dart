@@ -53,8 +53,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Colors.purple.shade400,
-              Colors.purple.shade800,
+              Colors.brown.shade400,
+              Colors.brown.shade800,
             ],
           ),
         ),
@@ -85,7 +85,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: const Icon(
                         Icons.person_add_outlined,
                         size: 50,
-                        color: Colors.purple,
+                        color: Colors.brown,
                       ),
                     ),
                     const SizedBox(height: 30),
