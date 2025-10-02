@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'home_screen.dart';
 import 'community_screen.dart';
 import 'profile_screen.dart';
+import 'reward_screen.dart';
 
 class MainNavScreen extends StatefulWidget {
   const MainNavScreen({super.key});
@@ -16,6 +17,7 @@ class _MainNavScreenState extends State<MainNavScreen> {
   final List<Widget> _screens = [
     const HomeScreen(),
     const CommunityScreen(),
+    const RewardScreen(),
     const ProfileScreen(),
   ];
 
@@ -54,6 +56,11 @@ class _MainNavScreenState extends State<MainNavScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
+              label: 'เเลกของรางวัล',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.card_giftcard_outlined), // เปลี่ยน icon ให้เหมาะสม
+              activeIcon: Icon(Icons.card_giftcard),
               label: 'โปรไฟล์',
             ),
           ],

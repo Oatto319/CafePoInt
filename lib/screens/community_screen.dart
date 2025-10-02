@@ -19,6 +19,148 @@ class _CommunityScreenState extends State<CommunityScreen> {
   void initState() {
     super.initState();
     _posts = DatabaseService.getPosts();
+
+    _posts.insertAll(0, [
+      PostModel(
+        id: 'sample1',
+        userId: 'user1',
+        userName: 'Wimol',
+        userImage: null,
+        imageUrl: 'https://media.istockphoto.com/id/2156124171/photo/ice-caramel-macchiato-coffee.webp?a=1&b=1&s=612x612&w=0&k=20&c=IifzK8dqdcDezZvXA1KyjF4R_JqyRAppWcf-5QVFl0Y=', // Caramel Macchiato
+        caption: 'กาแฟ Caramel Macchiato หอมหวานมากๆ วันนี้ได้ลองเมนูใหม่ อร่อยสุดๆ!',
+        menuTag: 'Caramel Macchiato',
+        likes: 5,
+        createdAt: DateTime.now().subtract(const Duration(hours: 2)),
+        comments: [
+          Comment(
+            userId: 'user2',
+            userName: 'Nina',
+            text: 'น่ากินมากเลยค่ะ!',
+            createdAt: DateTime.now().subtract(const Duration(hours: 1, minutes: 30)),
+          ),
+          Comment(
+            userId: 'user3',
+            userName: 'Bank',
+            text: 'ร้านนี้กาแฟดีจริง 👍',
+            createdAt: DateTime.now().subtract(const Duration(hours: 1)),
+          ),
+        ],
+      ),
+      PostModel(
+        id: 'sample2',
+        userId: 'user2',
+        userName: 'Nina',
+        userImage: null,
+        imageUrl: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=400&q=80', // Espresso
+        caption: 'Espresso เข้มข้น ตื่นเต็มตา! ใครชอบกาแฟเข้มๆ ต้องลอง',
+        menuTag: 'Espresso',
+        likes: 3,
+        createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+        comments: [
+          Comment(
+            userId: 'user1',
+            userName: 'Wimol',
+            text: 'เมนูโปรดเลยค่ะ!',
+            createdAt: DateTime.now().subtract(const Duration(hours: 2, minutes: 45)),
+          ),
+        ],
+      ),
+      PostModel(
+        id: 'sample3',
+        userId: 'user3',
+        userName: 'Bank',
+        userImage: null,
+        imageUrl: 'https://plus.unsplash.com/premium_photo-1668970851336-6c81cc888ba7?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8TW9jaGF8ZW58MHx8MHx8fDA%3D', // Mocha
+        caption: 'Mocha หวานมันกำลังดี ดื่มกับขนมปังยิ่งฟิน~',
+        menuTag: 'Mocha',
+        likes: 2,
+        createdAt: DateTime.now().subtract(const Duration(hours: 5)),
+        comments: [
+          Comment(
+            userId: 'user2',
+            userName: 'Nina',
+            text: 'ต้องลองบ้างแล้วค่ะ',
+            createdAt: DateTime.now().subtract(const Duration(hours: 4, minutes: 50)),
+          ),
+        ],
+      ),
+      PostModel(
+        id: 'sample4',
+        userId: 'user4',
+        userName: 'Tom',
+        userImage: null,
+        imageUrl: 'https://images.unsplash.com/photo-1509042239860-f550ce710b93?auto=format&fit=crop&w=400&q=80', // Latte
+        caption: 'ลาเต้ร้อน นุ่มละมุนมากๆ เหมาะกับเช้าวันใหม่!',
+        menuTag: 'Latte',
+        likes: 4,
+        createdAt: DateTime.now().subtract(const Duration(hours: 6)),
+        comments: [
+          Comment(
+            userId: 'user1',
+            userName: 'Wimol',
+            text: 'ต้องไปลองบ้างแล้วค่ะ',
+            createdAt: DateTime.now().subtract(const Duration(hours: 5, minutes: 45)),
+          ),
+        ],
+      ),
+      PostModel(
+        id: 'sample5',
+        userId: 'user5',
+        userName: 'Ice',
+        userImage: null,
+        imageUrl: 'https://media.istockphoto.com/id/2187142621/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%81%E0%B8%B2%E0%B9%81%E0%B8%9F%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99%E0%B9%83%E0%B8%99%E0%B9%81%E0%B8%81%E0%B9%89%E0%B8%A7%E0%B8%9E%E0%B8%A3%E0%B9%89%E0%B8%AD%E0%B8%A1%E0%B8%AB%E0%B8%A5%E0%B8%AD%E0%B8%94%E0%B8%94%E0%B9%8D%E0%B8%B2.jpg?s=612x612&w=0&k=20&c=V7FEZXSS39evKwNDE-V_j5VgvaP1xEss2PkfO-MuXmQ=', // Iced Coffee
+        caption: 'อากาศร้อนแบบนี้ต้องกาแฟเย็นเท่านั้น สดชื่นมาก!',
+        menuTag: 'Iced Coffee',
+        likes: 6,
+        createdAt: DateTime.now().subtract(const Duration(hours: 7)),
+        comments: [
+          Comment(
+            userId: 'user2',
+            userName: 'Nina',
+            text: 'น่าดื่มมากค่ะ',
+            createdAt: DateTime.now().subtract(const Duration(hours: 6, minutes: 45)),
+          ),
+        ],
+      ),
+      PostModel(
+        id: 'sample6',
+        userId: 'user6',
+        userName: 'Mint',
+        userImage: null,
+        imageUrl: 'https://media.istockphoto.com/id/1297370884/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%A1%E0%B8%A1%E0%B8%A7%E0%B8%A1%E0%B8%94%E0%B9%8D%E0%B8%B2%E0%B9%80%E0%B8%A2%E0%B9%87%E0%B8%99%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B9%82%E0%B8%9F%E0%B8%A1%E0%B8%99%E0%B8%A1-%E0%B8%95%E0%B8%A3%E0%B8%87%E0%B8%81%E0%B8%A5%E0%B8%B2%E0%B8%87.jpg?s=612x612&w=0&k=20&c=WTtLaVI2ouj4Ett38x1bwo5Tcv37QLPkxVI1xh6Yt2c=', // Matcha Latte
+        caption: 'Matcha Latte เขียวเข้มข้น หอมกลิ่นชาเขียวแท้ๆ',
+        menuTag: 'Matcha Latte',
+        likes: 2,
+        createdAt: DateTime.now().subtract(const Duration(hours: 8)),
+        comments: [
+          Comment(
+            userId: 'user3',
+            userName: 'Bank',
+            text: 'ต้องลองเมนูนี้บ้างแล้ว',
+            createdAt: DateTime.now().subtract(const Duration(hours: 7, minutes: 50)),
+          ),
+        ],
+      ),
+      PostModel(
+        id: 'sample7',
+        userId: 'user7',
+        userName: 'Nam',
+        userImage: null,
+        imageUrl: 'https://media.istockphoto.com/id/1147846777/th/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2/%E0%B8%8A%E0%B8%B2%E0%B8%99%E0%B9%89%E0%B9%8D%E0%B8%B2%E0%B9%81%E0%B8%82%E0%B9%87%E0%B8%87%E0%B8%81%E0%B8%B1%E0%B8%9A%E0%B8%A1%E0%B8%B0%E0%B8%99%E0%B8%B2%E0%B8%A7%E0%B9%81%E0%B8%A5%E0%B8%B0%E0%B8%AA%E0%B8%B0%E0%B8%A3%E0%B8%B0%E0%B9%81%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B9%83%E0%B8%99%E0%B8%82%E0%B8%A7%E0%B8%94.jpg?s=612x612&w=0&k=20&c=SoV1ByKpX3t5Ep_Q7CuDpidG7aIY6MI2BAndhJ9PL4k=', // Lemon Tea
+        caption: 'ชามะนาวเย็นๆ สดชื่นสุดๆ!',
+        menuTag: 'Lemon Tea',
+        likes: 3,
+        createdAt: DateTime.now().subtract(const Duration(hours: 9)),
+        comments: [
+          Comment(
+            userId: 'user4',
+            userName: 'Tom',
+            text: 'เหมาะกับอากาศร้อนจริงๆ',
+            createdAt: DateTime.now().subtract(const Duration(hours: 8, minutes: 45)),
+          ),
+        ],
+      ),
+    ]);
   }
 
   void _showCreatePostDialog() {
@@ -362,10 +504,77 @@ class _CommunityScreenState extends State<CommunityScreen> {
           : ListView.builder(
               itemCount: _posts.length,
               itemBuilder: (context, index) {
-                return PostCard(
-                  post: _posts[index],
-                  onLike: () => _toggleLike(index),
-                  onComment: () => _showComments(index),
+                return Stack(
+                  children: [
+                    PostCard(
+                      post: _posts[index],
+                      onLike: () => _toggleLike(index),
+                      onComment: () => _showComments(index),
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: PopupMenuButton<String>(
+                        onSelected: (value) {
+                          if (value == 'edit') {
+                            // TODO: เพิ่มฟังก์ชันแก้ไขโพสต์
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('ฟีเจอร์แก้ไขโพสต์ (ยังไม่พร้อมใช้งาน)')),
+                            );
+                          } else if (value == 'delete') {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: const Text('ลบโพสต์'),
+                                content: const Text('คุณต้องการลบโพสต์นี้หรือไม่?'),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text('ยกเลิก'),
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _posts.removeAt(index);
+                                      });
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text('ลบโพสต์สำเร็จ')),
+                                      );
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    child: const Text('ลบ'),
+                                  ),
+                                ],
+                              ),
+                            );
+                          } else if (value == 'report') {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('รายงานโพสต์เรียบร้อยแล้ว')),
+                            );
+                          }
+                        },
+                        itemBuilder: (context) => [
+                          const PopupMenuItem(
+                            value: 'edit',
+                            child: Text('แก้ไขโพสต์'),
+                          ),
+                          const PopupMenuItem(
+                            value: 'delete',
+                            child: Text('ลบโพสต์'),
+                          ),
+                          const PopupMenuItem(
+                            value: 'report',
+                            child: Text('รายงานโพสต์'),
+                          ),
+                        ],
+                        icon: const Icon(Icons.more_vert, color: Colors.grey),
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
