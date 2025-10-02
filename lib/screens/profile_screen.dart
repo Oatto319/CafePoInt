@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../services/auth_service.dart';
+import '../screens/points_provider.dart';
 import 'login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -23,6 +25,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
       _nameController.text = user.name;
       _emailController.text = user.email;
       _addressController.text = user.address ?? '';
+      // *** ลบการ sync แต้มออก ***
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   context.read<PointsProvider>().setPoints(user.points);
+      // });
     }
   }
 
@@ -71,6 +77,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ElevatedButton(
             onPressed: () {
               AuthService.logout();
+              context.read<PointsProvider>().setPoints(0); // รีเซ็ตแต้ม
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -86,6 +93,46 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
     );
+  }
+
+  void _changeProfileImage() async {
+    if (!_isEditing) return;
+    final controller = TextEditingController(text: AuthService.currentUser?.profileImage ?? "");
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('เปลี่ยนรูปโปรไฟล์ (Image URL)'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            labelText: 'Image URL',
+            border: OutlineInputBorder(),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('ยกเลิก'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                // อัปเดตเฉพาะใน AuthService.currentUser
+                var user = AuthService.currentUser;
+                if (user != null) {
+                  AuthService.updateUser(
+                    user.copyWith(profileImage: controller.text.trim()),
+                  );
+                }
+              });
+              Navigator.pop(context);
+            },
+            child: const Text('บันทึก'),
+          ),
+        ],
+      ),
+    );
+    setState(() {}); // refresh UI
   }
 
   @override
@@ -138,13 +185,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       CircleAvatar(
                         radius: 60,
                         backgroundColor: Colors.white,
-                        child: user.profileImage != null
+                        child: user.profileImage != null && user.profileImage!.isNotEmpty
                             ? ClipOval(
                                 child: Image.network(
                                   user.profileImage!,
                                   width: 120,
                                   height: 120,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) => Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.brown.shade700,
+                                  ),
                                 ),
                               )
                             : Icon(
@@ -157,17 +209,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Positioned(
                           bottom: 0,
                           right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.brown.shade700,
-                              shape: BoxShape.circle,
-                              border: Border.all(color: Colors.white, width: 2),
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              size: 20,
-                              color: Colors.white,
+                          child: GestureDetector(
+                            onTap: _changeProfileImage,
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.brown.shade700,
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.white, width: 2),
+                              ),
+                              child: const Icon(
+                                Icons.camera_alt,
+                                size: 20,
+                                color: Colors.white,
+                              ),
                             ),
                           ),
                         ),
@@ -183,30 +238,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 8,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.amber.shade700,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.stars, color: Colors.white, size: 20),
-                        const SizedBox(width: 8),
-                        Text(
-                          '${user.points} แต้ม',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  // แสดงแต้มแบบเรียลไทม์จาก PointsProvider
+                  Consumer<PointsProvider>(
+                    builder: (context, pointsProvider, child) {
+                      return Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
-                      ],
-                    ),
+                        decoration: BoxDecoration(
+                          color: Colors.amber.shade700,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.stars, color: Colors.white, size: 20),
+                            const SizedBox(width: 8),
+                            Text(
+                              '${pointsProvider.currentPoints} แต้ม',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }, // <-- เปลี่ยน ; เป็น ,
                   ),
                 ],
               ),
@@ -252,27 +312,31 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Stats Cards
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _buildStatCard(
-                          'แต้มทั้งหมด',
-                          '${user.points}',
-                          Icons.stars,
-                          Colors.amber.shade700,
-                        ),
-                      ),
-                      const SizedBox(width: 15),
-                      Expanded(
-                        child: _buildStatCard(
-                          'กาแฟฟรี',
-                          '${user.points ~/ 10}',
-                          Icons.local_cafe,
-                          Colors.brown.shade700,
-                        ),
-                      ),
-                    ],
+                  // Stats Cards - ใช้ Consumer เพื่ออัพเดทแบบเรียลไทม์
+                  Consumer<PointsProvider>(
+                    builder: (context, pointsProvider, child) {
+                      return Row(
+                        children: [
+                          Expanded(
+                            child: _buildStatCard(
+                              'แต้มทั้งหมด',
+                              '${pointsProvider.currentPoints}',
+                              Icons.stars,
+                              Colors.amber.shade700,
+                            ),
+                          ),
+                          const SizedBox(width: 15),
+                          Expanded(
+                            child: _buildStatCard(
+                              'กาแฟฟรี',
+                              '${pointsProvider.currentPoints ~/ 10}',
+                              Icons.local_cafe,
+                              Colors.brown.shade700,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                   const SizedBox(height: 30),
 
